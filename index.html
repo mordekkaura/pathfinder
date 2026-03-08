@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalPath - Find Your University Worldwide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2.5rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 2.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .results-container {
+            margin-bottom: 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.75rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .results-count {
+            font-size: 0.95rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .universities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        .university-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .university-card:nth-child(1) { animation-delay: 0.1s; }
+        .university-card:nth-child(2) { animation-delay: 0.15s; }
+        .university-card:nth-child(3) { animation-delay: 0.2s; }
+        .university-card:nth-child(4) { animation-delay: 0.25s; }
+        .university-card:nth-child(5) { animation-delay: 0.3s; }
+        .university-card:nth-child(6) { animation-delay: 0.35s; }
+        .university-card:nth-child(7) { animation-delay: 0.4s; }
+        .university-card:nth-child(8) { animation-delay: 0.45s; }
+
+        .university-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            border-color: #2563eb;
+        }
+
+        .university-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .university-header.nigeria {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .university-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .university-location {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .university-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .university-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .university-type {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #2563eb;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+
+        .university-type.nigeria {
+            color: #059669;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title.nigeria {
+            color: #059669;
+        }
+
+        .program-item {
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-left: 3px solid #2563eb;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .program-item.nigeria {
+            border-left-color: #059669;
+        }
+
+        .program-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+
+        .program-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .program-code {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .stat-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .stat-value.nigeria {
+            color: #059669;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            letter-spacing: 0.3px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: auto;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .action-btn.nigeria {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .action-btn.nigeria:hover {
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .requirements-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .requirement-heading {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .requirement-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .requirement-list li {
+            font-size: 0.9rem;
+            color: #64748b;
+            padding-left: 1.75rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .requirement-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .main-nav {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .universities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🌍 GlobalPath</div>
+                <ul class="main-nav">
+                    <li><button class="nav-btn active" onclick="switchTab('worldwide', event)">🌎 Worldwide</button></li>
+                    <li><button class="nav-btn" onclick="switchTab('nigeria', event)">🇳🇬 Nigeria</button></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1 id="heroTitle">Find Your Perfect University Worldwide</h1>
+            <p id="heroSubtitle">Search by course of study and discover institutions with complete eligibility requirements</p>
+        </section>
+
+        <section class="search-section">
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="courseSelect">Course of Study</label>
+                    <select id="courseSelect">
+                        <option value="">Select a course...</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Medicine">Medicine</option>
+                        <option value="Law">Law</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Mathematics">Mathematics</option>
+                    </select>
+                </div>
+                <div class="form-group" id="degreeLevelGroup">
+                    <label for="degreeLevel">Degree Level</label>
+                    <select id="degreeLevel">
+                        <option value="">All Levels</option>
+                        <option value="Bachelor">Bachelor</option>
+                        <option value="Master">Master</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </section>
+
+        <!-- WORLDWIDE TAB -->
+        <div id="worldwide" class="tab-content active">
+            <section class="results-container" style="display: none;">
+                <div class="results-header">
+                    <h2>Universities Found Worldwide</h2>
+                    <span class="results-count">Found <span id="worldwideCount">0</span> institutions</span>
+                </div>
+                <div class="universities-grid" id="worldwideList"></div>
+            </section>
+            <div id="worldwideEmpty" class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h2>Start Your Global Search</h2>
+                <p>Select a course of study to discover universities worldwide and their admission requirements</p>
+            </div>
+        </div>
+
+        <!-- NIGERIA TAB -->
+        <div id="nigeria" class="tab-content">
+            <section class="results-container" style="display: none;">
+                <div class="results-header">
+                    <h2>Nigerian Universities</h2>
+                    <span class="results-count">Found <span id="nigeriaCount">0</span> institutions</span>
+                </div>
+                <div class="universities-grid" id="nigeriaList"></div>
+            </section>
+            <div id="nigeriaEmpty" class="empty-state">
+                <div class="empty-state-icon">🇳🇬</div>
+                <h2>Nigerian Universities</h2>
+                <p>Select a course of study to explore Nigerian universities and their specific admission requirements</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="requirementsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const worldwideDatabase = [
+            {
+                name: "Harvard University",
+                location: "Cambridge, MA, USA",
+                country: "United States",
+                type: "Private",
+                ranking: "#1 Globally",
+                established: "1636",
+                students: "23,500",
+                courses: ["Computer Science", "Engineering", "Medicine", "Law", "Business Administration"],
+                programs: [
+                    {
+                        name: "Computer Science (B.S.)",
+                        code: "CS101",
+                        requirements: [
+                            "High school diploma or equivalent (GED)",
+                            "SAT score: 1500-1570 or ACT: 33-35",
+                            "GPA: 3.8+",
+                            "TOEFL: 100+ (international students)",
+                            "3-5 letters of recommendation",
+                            "Personal essays and statement of purpose",
+                            "Demonstrated extracurricular achievements",
+                            "Application fee: $85"
+                        ]
+                    },
+                    {
+                        name: "Medicine (M.D.)",
+                        code: "MED101",
+                        requirements: [
+                            "Bachelor's degree with science prerequisites",
+                            "MCAT score: 510-520+",
+                            "GPA: 3.7+",
+                            "TOEFL: 109+ (international students)",
+                            "Clinical experience or volunteer work",
+                            "3-4 letters of recommendation",
+                            "Personal statement and interview",
+                            "Application fee: $200"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Stanford University",
+                location: "Palo Alto, CA, USA",
+                country: "United States",
+                type: "Private",
+                ranking: "#2 Globally",
+                established: "1885",
+                students: "17,200",
+                courses: ["Computer Science", "Engineering", "Business Administration"],
+                programs: [
+                    {
+                        name: "Engineering (B.S.)",
+                        code: "ENG102",
+                        requirements: [
+                            "High school diploma or GED",
+                            "SAT: 1480-1570 or ACT: 33-35",
+                            "GPA: 3.9+",
+                            "Proficiency in Mathematics and Physics",
+                            "TOEFL: 100+ (international)",
+                            "2-3 teacher recommendations",
+                            "Counselor recommendation",
+                            "Essays and extracurricular activities"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Oxford",
+                location: "Oxford, UK",
+                country: "United Kingdom",
+                type: "Public",
+                ranking: "#4 Globally",
+                established: "1096",
+                students: "24,300",
+                courses: ["Computer Science", "Engineering", "Law", "Medicine", "Mathematics"],
+                programs: [
+                    {
+                        name: "Computer Science (B.A.)",
+                        code: "CS103",
+                        requirements: [
+                            "A-Levels: AAA or higher (or equivalent)",
+                            "GCSE Mathematics: Grade 7+",
+                            "IELTS: 7.5+ (international students)",
+                            "TOEFL: 110+ (alternative)",
+                            "2 academic references",
+                            "Personal statement",
+                            "Aptitude test (PAT or similar)",
+                            "College interview"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Cambridge",
+                location: "Cambridge, UK",
+                country: "United Kingdom",
+                type: "Public",
+                ranking: "#5 Globally",
+                established: "1209",
+                students: "19,900",
+                courses: ["Computer Science", "Engineering", "Mathematics", "Chemistry"],
+                programs: [
+                    {
+                        name: "Mathematics (B.A.)",
+                        code: "MATH104",
+                        requirements: [
+                            "A-Levels: AAA or higher",
+                            "GCSE Mathematics: Grade 7+",
+                            "IELTS: 7.5+ (international)",
+                            "TOEFL: 110+",
+                            "2 academic references",
+                            "Personal statement",
+                            "Entrance examinations (STEP/CSAT)",
+                            "Interview (usually 2-3 interviews)"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "ETH Zurich",
+                location: "Zurich, Switzerland",
+                country: "Switzerland",
+                type: "Public",
+                ranking: "#8 Globally",
+                established: "1855",
+                students: "24,300",
+                courses: ["Engineering", "Computer Science", "Physics", "Chemistry"],
+                programs: [
+                    {
+                        name: "Engineering (B.S.)",
+                        code: "ENG105",
+                        requirements: [
+                            "Swiss Matura or equivalent (IB, A-Levels)",
+                            "Mathematics and Physics: Advanced level",
+                            "English proficiency: B2+",
+                            "German proficiency: B2 (for German programs)",
+                            "Entrance examination in mathematics",
+                            "Application fee: CHF 50",
+                            "Academic references"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Tokyo",
+                location: "Tokyo, Japan",
+                country: "Japan",
+                type: "Public",
+                ranking: "#39 Globally",
+                established: "1877",
+                students: "28,100",
+                courses: ["Engineering", "Medicine", "Physics"],
+                programs: [
+                    {
+                        name: "Engineering (B.Eng.)",
+                        code: "ENG106",
+                        requirements: [
+                            "High school completion certificate",
+                            "TOEFL: 79-93 (iBT) or IELTS: 6.0+",
+                            "Entrance examination in Mathematics and Physics",
+                            "GPA: 3.0+",
+                            "2 academic recommendations",
+                            "Statement of purpose",
+                            "Application fee: ¥17,000",
+                            "Interview (for selected candidates)"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "National University of Singapore",
+                location: "Singapore",
+                country: "Singapore",
+                type: "Public",
+                ranking: "#11 Globally",
+                established: "1905",
+                students: "37,500",
+                courses: ["Computer Science", "Engineering", "Business Administration"],
+                programs: [
+                    {
+                        name: "Computer Science (B.Comp.)",
+                        code: "CS107",
+                        requirements: [
+                            "High school completion certificate",
+                            "SAT: 1400+ or local equivalent",
+                            "GPA: 3.5+",
+                            "IELTS: 6.5+ or TOEFL: 87+",
+                            "2 academic references",
+                            "Personal statement",
+                            "Application fee: SGD 20",
+                            "Interview (for selected candidates)"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Toronto",
+                location: "Toronto, Canada",
+                country: "Canada",
+                type: "Public",
+                ranking: "#23 Globally",
+                established: "1827",
+                students: "97,600",
+                courses: ["Engineering", "Medicine", "Business Administration"],
+                programs: [
+                    {
+                        name: "Engineering (B.A.Sc.)",
+                        code: "ENG108",
+                        requirements: [
+                            "High school diploma (Grade 12)",
+                            "Courses: Calculus, Physics, Chemistry (Grade 12)",
+                            "GPA: 3.5+",
+                            "TOEFL: 100+ (international students)",
+                            "IELTS: 6.5+",
+                            "2 teacher recommendations",
+                            "Application fee: CAD 80"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const nigeriaDatabase = [
+            {
+                name: "University of Ibadan",
+                location: "Ibadan, Oyo State",
+                country: "Nigeria",
+                type: "Federal",
+                ranking: "Rank #1 Nigeria",
+                established: "1948",
+                students: "42,000+",
+                courses: ["Computer Science", "Engineering", "Medicine", "Law", "Business Administration", "Agriculture"],
+                programs: [
+                    {
+                        name: "Computer Science (B.Sc.)",
+                        code: "CS-UNI-001",
+                        requirements: [
+                            "WAEC/NECO/NABTEB: Credit passes in English, Mathematics, Physics, Chemistry (Grade B3 minimum)",
+                            "UTME Score: 180-250 (competitive)",
+                            "JAMB Registration Code: 110001",
+                            "Post-UTME exam: Minimum 50% pass",
+                            "A-Level/IJMB: Accepted for Direct Entry (Grade C minimum)",
+                            "English language proficiency: Minimum C grade or pass",
+                            "No O-level failure in core subjects"
+                        ]
+                    },
+                    {
+                        name: "Medicine (M.B.B.S.)",
+                        code: "MED-UNI-001",
+                        requirements: [
+                            "WAEC/NECO: Credit passes in Biology, Chemistry, Physics (Grade A2-B3)",
+                            "UTME Score: 250-300+ (highly competitive)",
+                            "English: Credit pass (Grade B3 minimum)",
+                            "JAMB Registration Code: 110004",
+                            "Post-UTME exam: Minimum 70% pass",
+                            "Medical Entrance Examination: Separate assessment",
+                            "Interview stage is mandatory",
+                            "Strong science background required"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Lagos",
+                location: "Lagos, Lagos State",
+                country: "Nigeria",
+                type: "Federal",
+                ranking: "Rank #2 Nigeria",
+                established: "1962",
+                students: "38,000+",
+                courses: ["Computer Science", "Engineering", "Law", "Business Administration"],
+                programs: [
+                    {
+                        name: "Computer Science (B.Sc.)",
+                        code: "CS-UNILAG-001",
+                        requirements: [
+                            "WAEC/NECO: Credit in English, Mathematics, Physics, Chemistry",
+                            "UTME Score: 170-240",
+                            "JAMB Registration Code: 120001",
+                            "Post-UTME exam: Minimum 45% pass",
+                            "Subject combination: Science subjects preferred",
+                            "No O-level failure in required subjects",
+                            "Grade: B3 or better in core subjects"
+                        ]
+                    },
+                    {
+                        name: "Law (LL.B.)",
+                        code: "LAW-UNILAG-001",
+                        requirements: [
+                            "WAEC/NECO: Credit in English and any two other subjects",
+                            "UTME Score: 180-250",
+                            "English: Minimum C grade (B3 preferred)",
+                            "JAMB Registration Code: 120015",
+                            "Post-UTME exam: Minimum 50% pass",
+                            "Outstanding written expression required",
+                            "Social sciences background preferred"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Ahmadu Bello University",
+                location: "Zaria, Kaduna State",
+                country: "Nigeria",
+                type: "Federal",
+                ranking: "Rank #3 Nigeria",
+                established: "1962",
+                students: "41,000+",
+                courses: ["Engineering", "Medicine", "Agriculture", "Computer Science"],
+                programs: [
+                    {
+                        name: "Engineering (B.Eng.)",
+                        code: "ENG-ABU-001",
+                        requirements: [
+                            "Credit passes in Mathematics, Physics, Chemistry (Grade B3+)",
+                            "UTME Score: 190-260",
+                            "English: Minimum C grade",
+                            "JAMB Registration Code: 140001",
+                            "Post-UTME exam: Minimum 55% pass",
+                            "Technical drawing ability: Beneficial",
+                            "Strong quantitative skills required"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Obafemi Awolowo University",
+                location: "Ile-Ife, Osun State",
+                country: "Nigeria",
+                type: "Federal",
+                ranking: "Rank #4 Nigeria",
+                established: "1961",
+                students: "35,000+",
+                courses: ["Engineering", "Medicine", "Law", "Psychology"],
+                programs: [
+                    {
+                        name: "Medicine (M.B.B.S.)",
+                        code: "MED-OAU-001",
+                        requirements: [
+                            "Outstanding WAEC/NECO: All subjects with credit passes",
+                            "UTME Score: 260-300+ (highly selective)",
+                            "Biology: Credit pass (A2-B3 grade)",
+                            "Chemistry: Credit pass required",
+                            "Physics: Credit pass required",
+                            "JAMB Registration Code: 160004",
+                            "Post-UTME exam: Minimum 75% pass",
+                            "Interview stage is mandatory",
+                            "Medical aptitude assessment required"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "University of Nigeria, Nsukka",
+                location: "Nsukka, Enugu State",
+                country: "Nigeria",
+                type: "Federal",
+                ranking: "Rank #5 Nigeria",
+                established: "1960",
+                students: "40,000+",
+                courses: ["Engineering", "Medicine", "Computer Science", "Education"],
+                programs: [
+                    {
+                        name: "Engineering (B.Eng.)",
+                        code: "ENG-UNN-001",
+                        requirements: [
+                            "Credit passes in Mathematics, Physics, Chemistry",
+                            "UTME Score: 180-240",
+                            "JAMB Registration Code: 180001",
+                            "Post-UTME exam: Minimum 50% pass",
+                            "English: Minimum C grade or pass",
+                            "Problem-solving ability required",
+                            "No O-level failures"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Lagos State University",
+                location: "Lagos, Lagos State",
+                country: "Nigeria",
+                type: "State",
+                ranking: "Top State University",
+                established: "1983",
+                students: "25,000+",
+                courses: ["Computer Science", "Engineering", "Law", "Architecture"],
+                programs: [
+                    {
+                        name: "Computer Science (B.Sc.)",
+                        code: "CS-LASU-001",
+                        requirements: [
+                            "WAEC/NECO: Credit in English, Mathematics, Physics, Chemistry",
+                            "UTME Score: 150-200",
+                            "JAMB Registration Code: 120051",
+                            "Post-UTME exam: Minimum 40% pass",
+                            "Lagos State candidates: May have lower cut-off",
+                            "Subject combination flexibility available"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Covenant University",
+                location: "Ota, Ogun State",
+                country: "Nigeria",
+                type: "Private",
+                ranking: "Premium Private University",
+                established: "2002",
+                students: "15,000+",
+                courses: ["Computer Science", "Engineering", "Law", "Business Administration"],
+                programs: [
+                    {
+                        name: "Computer Science (B.Sc.)",
+                        code: "CS-CU-001",
+                        requirements: [
+                            "WAEC/NECO: Credit in English, Mathematics, Physics, Chemistry",
+                            "UTME Score: 120-180",
+                            "JAMB Registration Code: 110445",
+                            "Post-UTME or Institution exam: Minimum 40%",
+                            "Interview: Mandatory",
+                            "Scholarship opportunities for excellent candidates",
+                            "International standards curriculum"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Babcock University",
+                location: "Ilishan, Ogun State",
+                country: "Nigeria",
+                type: "Private",
+                ranking: "Established Private Institution",
+                established: "1959",
+                students: "12,000+",
+                courses: ["Medicine", "Pharmacy", "Engineering"],
+                programs: [
+                    {
+                        name: "Pharmacy (B.Pharm.)",
+                        code: "PHARM-BABC-001",
+                        requirements: [
+                            "WAEC/NECO: Excellent grades in Chemistry, Biology, Physics, English",
+                            "UTME Score: 160-220",
+                            "JAMB Registration Code: 110447",
+                            "Post-UTME/Institution exam: Minimum 50%",
+                            "Interview: Mandatory",
+                            "Laboratory practical assessment required",
+                            "Strong chemistry background essential"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const searchForm = document.getElementById('searchForm');
+        const courseSelect = document.getElementById('courseSelect');
+        let currentTab = 'worldwide';
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const course = courseSelect.value;
+
+            if (!course) {
+                alert('Please select a course of study');
+                return;
+            }
+
+            if (currentTab === 'worldwide') {
+                searchWorldwide(course);
+            } else {
+                searchNigeria(course);
+            }
+        });
+
+        function searchWorldwide(course) {
+            const filtered = worldwideDatabase.filter(uni =>
+                uni.courses.includes(course)
+            );
+            displayWorldwideResults(filtered);
+        }
+
+        function searchNigeria(course) {
+            const filtered = nigeriaDatabase.filter(uni =>
+                uni.courses.includes(course)
+            );
+            displayNigeriaResults(filtered);
+        }
+
+        function displayWorldwideResults(universities) {
+            const container = document.querySelector('#worldwide .results-container');
+            const emptyState = document.getElementById('worldwideEmpty');
+            const list = document.getElementById('worldwideList');
+            const count = document.getElementById('worldwideCount');
+
+            if (universities.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            count.textContent = universities.length;
+
+            list.innerHTML = universities.map(uni => `
+                <div class="university-card">
+                    <div class="university-header">
+                        <div class="university-name">${uni.name}</div>
+                        <div class="university-location">📍 ${uni.location}</div>
+                        <div class="university-badge">${uni.ranking}</div>
+                    </div>
+                    <div class="university-body">
+                        <div class="university-type">${uni.type} - ${uni.country}</div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div class="section-title">📚 Programs Available</div>
+                            ${uni.programs.map(prog => `
+                                <div class="program-item" onclick="openModal('${uni.name}', ${JSON.stringify(prog).replace(/'/g, "&apos;")})">
+                                    <div class="program-title">${prog.name}</div>
+                                    <div class="program-code">Code: ${prog.code}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <div class="stat-value">${uni.established}</div>
+                                <div class="stat-label">Established</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${uni.students}</div>
+                                <div class="stat-label">Students</div>
+                            </div>
+                        </div>
+                        <button class="action-btn">Learn More</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.style.display = 'block';
+        }
+
+        function displayNigeriaResults(universities) {
+            const container = document.querySelector('#nigeria .results-container');
+            const emptyState = document.getElementById('nigeriaEmpty');
+            const list = document.getElementById('nigeriaList');
+            const count = document.getElementById('nigeriaCount');
+
+            if (universities.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            count.textContent = universities.length;
+
+            list.innerHTML = universities.map(uni => `
+                <div class="university-card">
+                    <div class="university-header nigeria">
+                        <div class="university-name">${uni.name}</div>
+                        <div class="university-location">📍 ${uni.location}</div>
+                        <div class="university-badge">${uni.ranking}</div>
+                    </div>
+                    <div class="university-body">
+                        <div class="university-type nigeria">${uni.type} University</div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div class="section-title nigeria">📚 Programs Available</div>
+                            ${uni.programs.map(prog => `
+                                <div class="program-item nigeria" onclick="openModal('${uni.name}', ${JSON.stringify(prog).replace(/'/g, "&apos;")})">
+                                    <div class="program-title">${prog.name}</div>
+                                    <div class="program-code">Code: ${prog.code}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <div class="stat-value nigeria">${uni.established}</div>
+                                <div class="stat-label">Established</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value nigeria">${uni.students}</div>
+                                <div class="stat-label">Students</div>
+                            </div>
+                        </div>
+                        <button class="action-btn nigeria">Learn More</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.style.display = 'block';
+        }
+
+        function openModal(universityName, program) {
+            const modal = document.getElementById('requirementsModal');
+            const modalBody = document.getElementById('modalBody');
+
+            const requirementsHtml = program.requirements.map(req => `<li>${req}</li>`).join('');
+
+            modalBody.innerHTML = `
+                <div class="modal-title">${universityName}</div>
+                <div class="modal-subtitle">${program.name} (${program.code})</div>
+                <div class="requirements-section">
+                    <div class="requirement-heading">📋 Admission Requirements</div>
+                    <ul class="requirement-list">
+                        ${requirementsHtml}
+                    </ul>
+                </div>
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9; font-size: 0.9rem; color: #64748b;">
+                    <strong>Note:</strong> Requirements may vary by academic year. Contact the university's admissions office for the most current information and application deadlines.
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('requirementsModal').classList.remove('active');
+        }
+
+        function switchTab(tabName, event) {
+            event.preventDefault();
+            currentTab = tabName;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update hero text
+            if (tabName === 'worldwide') {
+                document.getElementById('heroTitle').textContent = 'Find Your Perfect University Worldwide';
+                document.getElementById('heroSubtitle').textContent = 'Search by course of study and discover institutions globally with complete eligibility requirements';
+            } else {
+                document.getElementById('heroTitle').textContent = "Discover Nigeria's Top Universities";
+                document.getElementById('heroSubtitle').textContent = 'Search for your preferred course of study and explore Nigerian institutions with UTME and JAMB requirements';
+            }
+        }
+
+        document.getElementById('requirementsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'requirementsModal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
